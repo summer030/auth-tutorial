@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import * as z from "zod";
+import { useSearchParams } from "next/navigation";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,6 +25,11 @@ import { Button } from "@/components/ui/button";
 import { CardWrapper } from "@/components/auth/card-wrapper";
 
 const LoginForm = () => {
+  const searchParams = useSearchParams();
+  const urlError =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "Email already in use with different provider!"
+      : "";
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>(
     ""
@@ -47,8 +53,9 @@ const LoginForm = () => {
       setError("");
       setSuccess("");
       login(values).then((data) => {
-        setError(data.error);
-        setSuccess(data.success);
+        setError(data?.error);
+        // TODO: Add when we add 2FA
+        // setSuccess(data.success);
       });
     });
   };
@@ -102,7 +109,7 @@ const LoginForm = () => {
               )}
             />
           </div>
-          <FormError message={error} />
+          <FormError message={error || urlError} />
           <FormSuccess message={success} />
           <Button
             type="submit"
