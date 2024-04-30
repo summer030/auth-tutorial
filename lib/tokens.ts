@@ -77,7 +77,7 @@ export const generateTwoFactorToken = async (
 
   // TODO: Later change to 15 minutes
   const expires = new Date(
-    new Date().getTime() + 3600 * 1000
+    new Date().getTime() + 5 * 60 * 1000
   );
 
   const existingToken =
